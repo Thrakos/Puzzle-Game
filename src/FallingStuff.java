@@ -27,6 +27,8 @@ public class FallingStuff {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.addKeyListener(panel);
+		frame.addMouseListener(panel);
+		frame.addMouseMotionListener(panel);
 
 		panel.startGame();
 	}
