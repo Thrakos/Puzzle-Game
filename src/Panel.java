@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +23,12 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	final int END_STATE = 2;
 	
 	int current_state;
+	
+	Font titleFont;
+	
+	Font otherFont;
+	
+	Racecar car;
 
 	Panel() {
 
@@ -30,6 +37,12 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		O = new Object();
 		
 		current_state = MENU_STATE;
+		
+		titleFont = new Font("Arial", Font.PLAIN, 48);
+		
+		otherFont = new Font("Arial", Font.PLAIN, 25);
+		
+		car = new Racecar(250, 700, 50, 50);
 
 	}
 
@@ -68,7 +81,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	}
 	
 	void updateGameState() {
-		
+		car.update();
 	}
 	
 	void updateEndState() {
@@ -78,11 +91,18 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	void drawMenuState(Graphics g){
 		g.setColor(Color.blue);
 		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
+		g.setColor(Color.YELLOW);
+		g.setFont(titleFont); 
+		g.drawString("Don't Crash", 120, 200);
+		g.setFont(otherFont);
+		g.drawString("Press ENTER to start", 125, 300);
+		g.drawString("Press SPACE for instructions", 80, 400);
 	}
 	
 	void drawGameState(Graphics g){
-		g.setColor(Color.black);
+		g.setColor(new Color(0, 220, 0));
 		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
+		car.draw(g);
 	}
 	
 	void drawEndState(Graphics g){
@@ -150,8 +170,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// O.setMouseX(e.getX());
-		// O.setMouseY(e.getY());
+		car.setMouseX(e.getX());
 		
 	}
 

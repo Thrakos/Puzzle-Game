@@ -8,9 +8,6 @@ public class Object {
 	int width;
 	int height;
 	
-	int mouseX;
-	int mouseY;
-	
 	Object() {
 		
 		width = 50;
@@ -19,20 +16,11 @@ public class Object {
 	}
 	
 	void update() {
-		x = mouseX;
-		y = mouseY;
+
 	}
 	
 	void draw(Graphics g){
-		g.setColor(Color.BLACK);
-		g.fillRect(x, y, width, height);
+
 	}
 	
-	void setMouseX(int mouseX){
-		this.mouseX = mouseX;
-	}
-	
-	void setMouseY(int mouseY){
-		this.mouseY = mouseY;
-	}
 }
