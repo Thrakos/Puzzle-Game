@@ -7,6 +7,8 @@ public class Racecar extends Object {
 	
 	int mouseX;
 	
+	boolean isAlive;
+	
 	Racecar(int x, int y, int width, int height){
 		
 		this.x = x;
@@ -15,6 +17,8 @@ public class Racecar extends Object {
 		this.height = height;
 		
 		speed = 5;
+		
+		isAlive = true;
 
 	}
 	
