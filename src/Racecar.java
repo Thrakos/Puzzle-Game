@@ -1,15 +1,14 @@
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Racecar extends Object {
+public class Racecar extends GameObject {
 
 	int speed;
 	
 	int mouseX;
 	
-	boolean isAlive;
-	
 	Racecar(int x, int y, int width, int height){
+		super();
 		
 		this.x = x;
 		this.y = y;
@@ -17,12 +16,12 @@ public class Racecar extends Object {
 		this.height = height;
 		
 		speed = 5;
-		
-		isAlive = true;
 
 	}
 	
 	void update() {
+		super.update();
+		
 		x = mouseX - 25;
 	}
 

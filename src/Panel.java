@@ -16,7 +16,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	Timer timer;
 	
-	Object O;
+	GameObject O;
 	
 	final int MENU_STATE = 0;
 	final int GAME_STATE = 1;
@@ -29,12 +29,14 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	Font otherFont;
 	
 	Racecar car;
+	
+	ObjectManager manager;
 
 	Panel() {
 
 		timer = new Timer(1000 / 60, this);
 		
-		O = new Object();
+		O = new GameObject();
 		
 		current_state = MENU_STATE;
 		
@@ -43,6 +45,10 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		otherFont = new Font("Arial", Font.PLAIN, 25);
 		
 		car = new Racecar(250, 700, 50, 50);
+		
+		manager = new ObjectManager();
+		
+		manager.addObject(car);
 
 	}
 
@@ -81,7 +87,16 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	}
 	
 	void updateGameState() {
-		car.update();
+		manager.update();
+		manager.manageEnemies();
+		manager.checkCollision();
+		if(car.isAlive == false){
+			current_state = END_STATE;
+			manager.reset();
+			car = new Racecar(250, 700, 50, 50);
+			manager.addObject(car);
+		}
+		
 	}
 	
 	void updateEndState() {
@@ -102,7 +117,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	void drawGameState(Graphics g){
 		g.setColor(new Color(0, 220, 0));
 		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
-		car.draw(g);
+		manager.draw(g);
 	}
 	
 	void drawEndState(Graphics g){
