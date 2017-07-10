@@ -5,12 +5,18 @@ import java.util.Random;
 
 public class ObjectManager {
 	ArrayList<GameObject> objects;
-	
+
 	private int score = 0;
-	
+
 	long enemyTimer = 0;
-	int enemySpawnTime = 150;
-	
+	int enemySpawnTime = 110;
+
+	Random rand = new Random();
+	Random rand2 = new Random();
+
+	int ran = rand.nextInt(FallingStuff.WIDTH - 250);
+	int ran2 = 0;
+
 	public ObjectManager() {
 		objects = new ArrayList<GameObject>();
 	}
@@ -24,8 +30,8 @@ public class ObjectManager {
 			GameObject o = objects.get(i);
 			o.update();
 		}
-		
-		purgeObjects();	
+
+		purgeObjects();
 	}
 
 	public void draw(Graphics g) {
@@ -43,9 +49,16 @@ public class ObjectManager {
 		}
 	}
 
-	public void manageEnemies(){
-		if(System.currentTimeMillis() - enemyTimer >= enemySpawnTime){
-			addObject(new Wall(new Random().nextInt(FallingStuff.WIDTH), 0, 50, 50));
+	public void manageEnemies() {
+		if (System.currentTimeMillis() - enemyTimer >= enemySpawnTime) {
+			ran2 = rand2.nextInt(10);
+			if (ran2 % 2 == 0 && ran <= 250) {
+				ran += 20;
+			} else if (ran >= 20) {
+				ran -= 20;
+			}
+			addObject(new Wall(ran, 0, 50, 50));
+			addObject(new Wall(ran + 200, 0, 50, 50));
 			enemyTimer = System.currentTimeMillis();
 		}
 	}
@@ -55,28 +68,28 @@ public class ObjectManager {
 			for (int j = i + 1; j < objects.size(); j++) {
 				GameObject o1 = objects.get(i);
 				GameObject o2 = objects.get(j);
-				
-				if(o1.collisionBox.intersects(o2.collisionBox)){
-					if((o1 instanceof Wall && o2 instanceof Racecar) ||
-					   (o2 instanceof Wall && o1 instanceof Racecar)){
+
+				if (o1.collisionBox.intersects(o2.collisionBox)) {
+					if ((o1 instanceof Wall && o2 instanceof Racecar)
+							|| (o2 instanceof Wall && o1 instanceof Racecar)) {
 						o1.isAlive = false;
 						o2.isAlive = false;
 					}
-	
+
 				}
 			}
 		}
 	}
-	
-	public int getScore(){
+
+	public int getScore() {
 		return score;
 	}
-	
-	public void setScore(int s){
+
+	public void setScore(int s) {
 		score = s;
 	}
-	
-	public void reset(){
+
+	public void reset() {
 		objects.clear();
 	}
 }
