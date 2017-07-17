@@ -1,3 +1,4 @@
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -53,7 +54,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e){
 		repaint();
 		if (current_state == MENU_STATE) {
 			updateMenuState();
@@ -84,7 +85,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	}
 
-	void updateGameState() {
+	void updateGameState(){
 		manager.update();
 		manager.manageEnemies();
 		manager.checkCollision();
@@ -116,11 +117,15 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		g.setColor(new Color(0, 200, 0));
 		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
 		manager.draw(g);
+		car.draw(g);
 	}
 
 	void drawEndState(Graphics g) {
 		g.setColor(Color.red);
 		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
+		g.setColor(Color.blue);
+		g.setFont(titleFont);
+		g.drawString("Your Score: " + manager.score, 50, 400);
 	}
 
 	@Override

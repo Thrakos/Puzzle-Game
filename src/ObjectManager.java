@@ -1,4 +1,5 @@
 
+import java.awt.AWTException;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
@@ -6,15 +7,15 @@ import java.util.Random;
 public class ObjectManager {
 	ArrayList<GameObject> objects;
 
-	private int score = 0;
+	int score = 0;
 
 	long enemyTimer = 0;
-	int enemySpawnTime = 110;
+	int enemySpawnTime = 80;
 
 	Random rand = new Random();
 	Random rand2 = new Random();
 
-	int ran = rand.nextInt(FallingStuff.WIDTH - 250);
+	int ran = rand.nextInt(FallingStuff.WIDTH - 250) + 70;
 	int ran2 = 0;
 
 	public ObjectManager() {
@@ -49,17 +50,18 @@ public class ObjectManager {
 		}
 	}
 
-	public void manageEnemies() {
+	public void manageEnemies(){
 		if (System.currentTimeMillis() - enemyTimer >= enemySpawnTime) {
 			ran2 = rand2.nextInt(10);
-			if (ran2 % 2 == 0 && ran <= 250) {
+			if (ran2 % 2 == 0 && ran <= 220) {
 				ran += 20;
-			} else if (ran >= 20) {
+			} else if (ran >= 90) {
 				ran -= 20;
 			}
-			addObject(new Wall(ran, 0, 50, 50));
-			addObject(new Wall(ran + 200, 0, 50, 50));
+			addObject(new Wall(ran, -50, 50, 50));
+			addObject(new Wall(ran + 200, -50, 50, 50));
 			enemyTimer = System.currentTimeMillis();
+			score += 1;
 		}
 	}
 
