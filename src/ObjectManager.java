@@ -1,5 +1,4 @@
 
-import java.awt.AWTException;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,7 +14,7 @@ public class ObjectManager {
 	Random rand = new Random();
 	Random rand2 = new Random();
 
-	int ran = rand.nextInt(FallingStuff.WIDTH - 250) + 70;
+	int ran = 125;
 	int ran2 = 0;
 
 	public ObjectManager() {
@@ -50,7 +49,7 @@ public class ObjectManager {
 		}
 	}
 
-	public void manageEnemies(){
+	public void manageEnemies() {
 		if (System.currentTimeMillis() - enemyTimer >= enemySpawnTime) {
 			ran2 = rand2.nextInt(10);
 			if (ran2 % 2 == 0 && ran <= 220) {

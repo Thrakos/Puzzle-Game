@@ -2,6 +2,7 @@ import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -24,6 +25,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	final int END_STATE = 2;
 
 	int current_state;
+
+	boolean instructions = false;
 
 	Font titleFont;
 
@@ -51,10 +54,17 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 		manager.addObject(car);
 
+		for (int i = 0; i < 16; i++) {
+			Wall wall = new Wall(125, i * 50 - 10, 50, 50);
+			Wall wall2 = new Wall(125 + 200, i * 50 - 10, 50, 50);
+			manager.addObject(wall);
+			manager.addObject(wall2);
+		}
+
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e){
+	public void actionPerformed(ActionEvent e) {
 		repaint();
 		if (current_state == MENU_STATE) {
 			updateMenuState();
@@ -85,7 +95,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	}
 
-	void updateGameState(){
+	void updateGameState() {
 		manager.update();
 		manager.manageEnemies();
 		manager.checkCollision();
@@ -94,7 +104,13 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			manager.reset();
 			car = new Racecar(250, 700, 50, 50);
 			manager.addObject(car);
-			manager.score = 0;
+			manager.ran = 125;
+			for (int i = 0; i < 16; i++) {
+				Wall wall = new Wall(125, i * 50 - 10, 50, 50);
+				Wall wall2 = new Wall(125 + 200, i * 50 - 10, 50, 50);
+				manager.addObject(wall);
+				manager.addObject(wall2);
+			}
 		}
 
 	}
@@ -107,11 +123,19 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		g.setColor(Color.blue);
 		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
 		g.setColor(Color.YELLOW);
-		g.setFont(titleFont);
-		g.drawString("Don't Crash", 120, 200);
-		g.setFont(otherFont);
-		g.drawString("Press ENTER to start", 125, 300);
-		g.drawString("Press SPACE for instructions", 80, 400);
+		if (instructions == false) {
+			g.setFont(titleFont);
+			g.drawString("Don't Crash", 120, 200);
+			g.setFont(otherFont);
+			g.drawString("Press ENTER to start", 125, 300);
+			g.drawString("Press SPACE for instructions", 80, 400);
+		} else {
+			g.setFont(otherFont);
+			g.drawString("Move the car with the mouse and", 80, 350);
+			g.setFont(titleFont);
+			g.drawString("Don't Crash", 120, 410);
+		}
+		manager.score = 0;
 	}
 
 	void drawGameState(Graphics g) {
@@ -119,6 +143,9 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
 		manager.draw(g);
 		car.draw(g);
+		g.setColor(Color.yellow);
+		g.setFont(otherFont);
+		g.drawString("score: " + manager.score, 10, 30);
 	}
 
 	void drawEndState(Graphics g) {
@@ -136,11 +163,26 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER && current_state != GAME_STATE) {
 			current_state += 1;
 		}
 		if (current_state > END_STATE) {
 			current_state = MENU_STATE;
+		}
+		if (current_state == GAME_STATE) {
+			try {
+				int nx = getLocationOnScreen().x;
+				int ny = getLocationOnScreen().y;
+				new Robot().mouseMove(nx + 275, ny + 725);
+			} catch (AWTException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_SPACE && current_state == MENU_STATE && instructions == false) {
+			instructions = true;
+		} else if (instructions == true) {
+			instructions = false;
 		}
 
 	}
