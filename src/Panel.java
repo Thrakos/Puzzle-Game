@@ -94,6 +94,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			manager.reset();
 			car = new Racecar(250, 700, 50, 50);
 			manager.addObject(car);
+			manager.score = 0;
 		}
 
 	}
