@@ -29,6 +29,7 @@ public class FallingStuff {
 		frame.addKeyListener(panel);
 		frame.addMouseListener(panel);
 		frame.addMouseMotionListener(panel);
+		frame.setResizable(false);
 
 		panel.startGame();
 	}

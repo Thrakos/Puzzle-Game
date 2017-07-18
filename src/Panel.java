@@ -28,6 +28,9 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	final int END_STATE = 2;
 
 	int current_state;
+	
+	int grass1y;
+	int grass2y;
 
 	boolean instructions = false;
 
@@ -40,6 +43,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	ObjectManager manager;
 	
 	public static BufferedImage carImg;
+	
+	public static BufferedImage grassImg;
 
 	Panel() {
 
@@ -59,8 +64,12 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 		manager.addObject(car);
 		
+		grass1y = 0;
+		grass2y = -FallingStuff.HEIGHT;
+		
 		try {
-			carImg = ImageIO.read(this.getClass().getResourceAsStream("pixil-gif-drawing.gif"));
+			carImg = ImageIO.read(this.getClass().getResourceAsStream("racecar.gif"));
+			grassImg = ImageIO.read(this.getClass().getResourceAsStream("grass.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -112,6 +121,14 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		manager.update();
 		manager.manageEnemies();
 		manager.checkCollision();
+		grass1y += 10;
+		grass2y += 10;
+		if(grass1y >= FallingStuff.HEIGHT){
+			grass1y = -FallingStuff.HEIGHT;
+		}
+		if(grass2y >= FallingStuff.HEIGHT){
+			grass2y = -FallingStuff.HEIGHT;
+		}
 		if (car.isAlive == false) {
 			current_state = END_STATE;
 			manager.reset();
@@ -152,8 +169,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	}
 
 	void drawGameState(Graphics g) {
-		g.setColor(new Color(0, 200, 0));
-		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
+		g.drawImage(grassImg, 0, grass1y, FallingStuff.WIDTH, FallingStuff.HEIGHT, null);
+		g.drawImage(grassImg, 0, grass2y, FallingStuff.WIDTH, FallingStuff.HEIGHT, null);
 		manager.draw(g);
 		car.draw(g);
 		g.setColor(Color.yellow);
@@ -186,7 +203,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			try {
 				int nx = getLocationOnScreen().x;
 				int ny = getLocationOnScreen().y;
-				new Robot().mouseMove(nx + 275, ny + 725);
+				new Robot().mouseMove(nx + 250, ny + 725);
 			} catch (AWTException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -231,7 +248,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+		car.isAlive = false;
 
 	}
 

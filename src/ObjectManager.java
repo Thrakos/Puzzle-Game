@@ -6,6 +6,8 @@ import java.util.Random;
 public class ObjectManager {
 	ArrayList<GameObject> objects;
 
+	Racecar car;
+	
 	int score = 0;
 
 	long enemyTimer = 0;
@@ -30,7 +32,7 @@ public class ObjectManager {
 			GameObject o = objects.get(i);
 			o.update();
 		}
-
+		
 		purgeObjects();
 	}
 
