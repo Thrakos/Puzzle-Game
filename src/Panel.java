@@ -10,7 +10,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -35,6 +38,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	Racecar car;
 
 	ObjectManager manager;
+	
+	public static BufferedImage carImg;
 
 	Panel() {
 
@@ -53,6 +58,14 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		manager = new ObjectManager();
 
 		manager.addObject(car);
+		
+		try {
+			carImg = ImageIO.read(this.getClass().getResourceAsStream("pixil-gif-drawing.gif"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 
 		for (int i = 0; i < 16; i++) {
 			Wall wall = new Wall(125, i * 50 - 10, 50, 50);

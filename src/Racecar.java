@@ -26,8 +26,7 @@ public class Racecar extends GameObject {
 	}
 
 	void draw(Graphics g) {
-		g.setColor(Color.BLUE);
-		g.fillRect(x, y, width, height);
+		g.drawImage(Panel.carImg, x, y, width, height, null);
 
 	}
 
