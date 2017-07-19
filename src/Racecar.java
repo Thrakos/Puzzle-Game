@@ -23,6 +23,10 @@ public class Racecar extends GameObject {
 		super.update();
 
 		x = mouseX - 25;
+
+		if (x < 70) {
+			isAlive = false;
+		}
 	}
 
 	void draw(Graphics g) {

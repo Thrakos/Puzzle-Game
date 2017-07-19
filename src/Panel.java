@@ -2,6 +2,7 @@ import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,14 +26,20 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	final int MENU_STATE = 0;
 	final int GAME_STATE = 1;
-	final int END_STATE = 2;
+	final int PAUSE_STATE = 2;
+	final int END_STATE = 3;
 
 	int current_state;
-	
+
 	int grass1y;
 	int grass2y;
 
-	boolean instructions = false;
+	int number;
+
+	boolean instructions;
+
+	boolean countdown;
+	boolean countdown2;
 
 	Font titleFont;
 
@@ -41,9 +48,9 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	Racecar car;
 
 	ObjectManager manager;
-	
+
 	public static BufferedImage carImg;
-	
+
 	public static BufferedImage grassImg;
 
 	Panel() {
@@ -63,10 +70,17 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		manager = new ObjectManager();
 
 		manager.addObject(car);
-		
+
+		instructions = false;
+
+		countdown = false;
+		countdown2 = false;
+
 		grass1y = 0;
 		grass2y = -FallingStuff.HEIGHT;
-		
+
+		number = 3;
+
 		try {
 			carImg = ImageIO.read(this.getClass().getResourceAsStream("racecar.gif"));
 			grassImg = ImageIO.read(this.getClass().getResourceAsStream("grass.png"));
@@ -74,7 +88,6 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 
 		for (int i = 0; i < 16; i++) {
 			Wall wall = new Wall(125, i * 50 - 10, 50, 50);
@@ -92,6 +105,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			updateMenuState();
 		} else if (current_state == GAME_STATE) {
 			updateGameState();
+		} else if (current_state == PAUSE_STATE) {
+			updatePauseState();
 		} else if (current_state == END_STATE) {
 			updateEndState();
 		}
@@ -107,6 +122,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			drawMenuState(g);
 		} else if (current_state == GAME_STATE) {
 			drawGameState(g);
+		} else if (current_state == PAUSE_STATE) {
+			drawPauseState(g);
 		} else if (current_state == END_STATE) {
 			drawEndState(g);
 		}
@@ -123,10 +140,10 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		manager.checkCollision();
 		grass1y += 10;
 		grass2y += 10;
-		if(grass1y >= FallingStuff.HEIGHT){
+		if (grass1y >= FallingStuff.HEIGHT) {
 			grass1y = -FallingStuff.HEIGHT;
 		}
-		if(grass2y >= FallingStuff.HEIGHT){
+		if (grass2y >= FallingStuff.HEIGHT) {
 			grass2y = -FallingStuff.HEIGHT;
 		}
 		if (car.isAlive == false) {
@@ -177,6 +194,52 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		g.setFont(otherFont);
 		g.drawString("score: " + manager.score, 10, 30);
 	}
+	
+	void updatePauseState() {
+		if (countdown2 == true){
+			number -= 1;
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (number == 0){
+			countdown = false;
+			countdown2 = false;
+			number = 3;
+			try {
+				int nx = getLocationOnScreen().x;
+				int ny = getLocationOnScreen().y;
+				new Robot().mouseMove(nx + car.x + 25, ny + car.y);
+			} catch (AWTException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			current_state = GAME_STATE;
+		}
+	}
+
+	void drawPauseState(Graphics g) {
+		drawGameState(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setPaint(new Color(255, 255, 255, 200));
+		g2.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
+		if (countdown == true) {
+			g.setFont(titleFont);
+			g.setColor(Color.yellow);
+			g.drawString("" + number, 240, 300);
+			countdown2 = true;
+		} else {
+			g.setFont(titleFont);
+			g.setColor(Color.yellow);
+			g.drawString("Game Paused", 100, 300);
+			g.setFont(otherFont);
+			g.drawString("Click to continue", 170, 350);
+		}
+
+	}
 
 	void drawEndState(Graphics g) {
 		g.setColor(Color.red);
@@ -224,8 +287,9 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		if (current_state == PAUSE_STATE) {
+			countdown = true;
+		}
 	}
 
 	@Override
@@ -243,12 +307,13 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		car.isAlive = false;
+		if (current_state == GAME_STATE) {
+			current_state = PAUSE_STATE;
+		}
 
 	}
 
