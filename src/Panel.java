@@ -28,6 +28,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	final int MENU_STATE = 0;
 	final int GAME_STATE = 1;
 	final int PAUSE_STATE = 2;
+	final int CHAR_SELECT_STATE = 2;
 	final int END_STATE = 3;
 
 	int current_state;
@@ -59,10 +60,10 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	public static BufferedImage grassImg;
 
 	JPanel panel;
-	
+
 	JButton redButton;
 	JButton blueButton;
-	
+
 	ButtonAction BA;
 
 	Panel() {
@@ -96,7 +97,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		number = 3;
 
 		character = 1;
-		
+
 		panel = new JPanel();
 
 		redButton = new JButton();
@@ -106,14 +107,17 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		blueButton.setText("Blue Car");
 		redButton.setVisible(true);
 		blueButton.setVisible(true);
-		redButton.setSize(100, 50); 
+		redButton.setSize(100, 50);
 		blueButton.setBounds(105, 0, 100, 50);
-		
+
 		panel.add(redButton);
 		panel.add(blueButton);
-		
+
+		add(redButton);
+		add(blueButton);
+
 		add(panel);
-		
+
 		BA = new ButtonAction(redButton, blueButton);
 
 		try {
@@ -136,15 +140,15 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		repaint();
-			if (current_state == MENU_STATE) {
-				updateMenuState();
-			} else if (current_state == GAME_STATE) {
-				updateGameState();
-			} else if (current_state == PAUSE_STATE) {
-				updatePauseState();
-			} else if (current_state == END_STATE) {
-				updateEndState();
-			}
+		if (current_state == MENU_STATE) {
+			updateMenuState();
+		} else if (current_state == GAME_STATE) {
+			updateGameState();
+		} else if (current_state == PAUSE_STATE) {
+			updatePauseState();
+		} else if (current_state == END_STATE) {
+			updateEndState();
+		}
 	}
 
 	void startGame() {
@@ -204,7 +208,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		g.setColor(Color.blue);
 		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
 		g.setColor(Color.YELLOW);
-		if (instructions == false && character_select == false) {
+		if (instructions == false) {
 			g.setFont(titleFont);
 			g.drawString("Don't Crash", 120, 200);
 			g.setFont(otherFont);
@@ -212,21 +216,12 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			g.drawString("Press SPACE for instructions", 80, 400);
 			g.drawString("Press 1 for character selection", 70, 500);
 		}
-		if (instructions == true && character_select == false) {
+		if (instructions == true) {
 			g.setFont(otherFont);
 			g.drawString("Move the car with the mouse and", 80, 350);
 			g.setFont(titleFont);
 			g.drawString("Don't Crash", 120, 410);
 		}
-		if (character_select == true && instructions == false) {
-			add(redButton);
-			add(blueButton);
-		}
-		if (character_select == false) {
-			remove(redButton);
-			remove(blueButton);
-		}
-		manager.score = 0;
 	}
 
 	void drawGameState(Graphics g) {
@@ -321,12 +316,6 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		} else if (instructions == true) {
 			instructions = false;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_1 && current_state == MENU_STATE && character_select == false) {
-			character_select = true;
-		} else if (character_select == true) {
-			character_select = false;
-		}
-
 	}
 
 	@Override
