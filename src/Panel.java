@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -36,7 +37,11 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	int number;
 
+	int character;
+
 	boolean instructions;
+
+	boolean character_select;
 
 	boolean countdown;
 	boolean countdown2;
@@ -52,6 +57,13 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	public static BufferedImage carImg;
 
 	public static BufferedImage grassImg;
+
+	JPanel panel;
+	
+	JButton redButton;
+	JButton blueButton;
+	
+	ButtonAction BA;
 
 	Panel() {
 
@@ -73,6 +85,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 		instructions = false;
 
+		character_select = false;
+
 		countdown = false;
 		countdown2 = false;
 
@@ -80,6 +94,27 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		grass2y = -FallingStuff.HEIGHT;
 
 		number = 3;
+
+		character = 1;
+		
+		panel = new JPanel();
+
+		redButton = new JButton();
+		blueButton = new JButton();
+
+		redButton.setText("Red Car");
+		blueButton.setText("Blue Car");
+		redButton.setVisible(true);
+		blueButton.setVisible(true);
+		redButton.setSize(100, 50); 
+		blueButton.setBounds(105, 0, 100, 50);
+		
+		panel.add(redButton);
+		panel.add(blueButton);
+		
+		add(panel);
+		
+		BA = new ButtonAction(redButton, blueButton);
 
 		try {
 			carImg = ImageIO.read(this.getClass().getResourceAsStream("racecar.gif"));
@@ -101,16 +136,15 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		repaint();
-		if (current_state == MENU_STATE) {
-			updateMenuState();
-		} else if (current_state == GAME_STATE) {
-			updateGameState();
-		} else if (current_state == PAUSE_STATE) {
-			updatePauseState();
-		} else if (current_state == END_STATE) {
-			updateEndState();
-		}
-
+			if (current_state == MENU_STATE) {
+				updateMenuState();
+			} else if (current_state == GAME_STATE) {
+				updateGameState();
+			} else if (current_state == PAUSE_STATE) {
+				updatePauseState();
+			} else if (current_state == END_STATE) {
+				updateEndState();
+			}
 	}
 
 	void startGame() {
@@ -170,17 +204,27 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		g.setColor(Color.blue);
 		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
 		g.setColor(Color.YELLOW);
-		if (instructions == false) {
+		if (instructions == false && character_select == false) {
 			g.setFont(titleFont);
 			g.drawString("Don't Crash", 120, 200);
 			g.setFont(otherFont);
 			g.drawString("Press ENTER to start", 125, 300);
 			g.drawString("Press SPACE for instructions", 80, 400);
-		} else {
+			g.drawString("Press 1 for character selection", 70, 500);
+		}
+		if (instructions == true && character_select == false) {
 			g.setFont(otherFont);
 			g.drawString("Move the car with the mouse and", 80, 350);
 			g.setFont(titleFont);
 			g.drawString("Don't Crash", 120, 410);
+		}
+		if (character_select == true && instructions == false) {
+			add(redButton);
+			add(blueButton);
+		}
+		if (character_select == false) {
+			remove(redButton);
+			remove(blueButton);
 		}
 		manager.score = 0;
 	}
@@ -194,9 +238,9 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		g.setFont(otherFont);
 		g.drawString("score: " + manager.score, 10, 30);
 	}
-	
+
 	void updatePauseState() {
-		if (countdown2 == true){
+		if (countdown2 == true) {
 			number -= 1;
 			try {
 				Thread.sleep(1000);
@@ -205,7 +249,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 				e.printStackTrace();
 			}
 		}
-		if (number == 0){
+		if (number == 0) {
 			countdown = false;
 			countdown2 = false;
 			number = 3;
@@ -276,6 +320,11 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			instructions = true;
 		} else if (instructions == true) {
 			instructions = false;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_1 && current_state == MENU_STATE && character_select == false) {
+			character_select = true;
+		} else if (character_select == true) {
+			character_select = false;
 		}
 
 	}
