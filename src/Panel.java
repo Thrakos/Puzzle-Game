@@ -15,7 +15,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -28,7 +27,6 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	final int MENU_STATE = 0;
 	final int GAME_STATE = 1;
 	final int PAUSE_STATE = 2;
-	final int CHAR_SELECT_STATE = 2;
 	final int END_STATE = 3;
 
 	int current_state;
@@ -44,6 +42,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	boolean character_select;
 
+	boolean secret_unlocked;
+
 	boolean countdown;
 	boolean countdown2;
 
@@ -56,15 +56,10 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	ObjectManager manager;
 
 	public static BufferedImage carImg;
-
 	public static BufferedImage grassImg;
-
-	JPanel panel;
-
-	JButton redButton;
-	JButton blueButton;
-
-	ButtonAction BA;
+	public static BufferedImage redCarImg;
+	public static BufferedImage blueCarImg;
+	public static BufferedImage secretCarImg;
 
 	Panel() {
 
@@ -87,6 +82,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		instructions = false;
 
 		character_select = false;
+		
+		secret_unlocked = false;
 
 		countdown = false;
 		countdown2 = false;
@@ -98,31 +95,12 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 		character = 1;
 
-		panel = new JPanel();
-
-		redButton = new JButton();
-		blueButton = new JButton();
-
-		redButton.setText("Red Car");
-		blueButton.setText("Blue Car");
-		redButton.setVisible(true);
-		blueButton.setVisible(true);
-		redButton.setSize(100, 50);
-		blueButton.setBounds(105, 0, 100, 50);
-
-		panel.add(redButton);
-		panel.add(blueButton);
-
-		add(redButton);
-		add(blueButton);
-
-		add(panel);
-
-		BA = new ButtonAction(redButton, blueButton);
-
 		try {
 			carImg = ImageIO.read(this.getClass().getResourceAsStream("racecar.gif"));
 			grassImg = ImageIO.read(this.getClass().getResourceAsStream("grass.png"));
+			redCarImg = ImageIO.read(this.getClass().getResourceAsStream("racecar.gif"));
+			blueCarImg = ImageIO.read(this.getClass().getResourceAsStream("bluecar.gif"));
+			secretCarImg = ImageIO.read(this.getClass().getResourceAsStream("secretcar.gif"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -169,7 +147,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	}
 
 	void updateMenuState() {
-
+		manager.score = 0;
 	}
 
 	void updateGameState() {
@@ -208,7 +186,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		g.setColor(Color.blue);
 		g.fillRect(0, 0, FallingStuff.WIDTH, FallingStuff.HEIGHT);
 		g.setColor(Color.YELLOW);
-		if (instructions == false) {
+		if (instructions == false && character_select == false) {
 			g.setFont(titleFont);
 			g.drawString("Don't Crash", 120, 200);
 			g.setFont(otherFont);
@@ -216,11 +194,21 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			g.drawString("Press SPACE for instructions", 80, 400);
 			g.drawString("Press 1 for character selection", 70, 500);
 		}
-		if (instructions == true) {
+		if (instructions == true && character_select == false) {
 			g.setFont(otherFont);
 			g.drawString("Move the car with the mouse and", 80, 350);
 			g.setFont(titleFont);
 			g.drawString("Don't Crash", 120, 410);
+		}
+		if (character_select == true && instructions == false) {
+			g.drawImage(Panel.redCarImg, 0, 0, 50, 50, null);
+			g.drawImage(Panel.blueCarImg, 55, 0, 50, 50, null);
+			if (secret_unlocked == true) {
+				g.drawImage(Panel.secretCarImg, 450, 720, 50, 50, null);
+			}			
+			g.setColor(Color.yellow);
+			g.setFont(otherFont);
+			g.drawString("Click a car to select it", 125, 700);
 		}
 	}
 
@@ -295,7 +283,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER && current_state != GAME_STATE) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER && current_state != GAME_STATE && current_state != PAUSE_STATE) {
 			current_state += 1;
 		}
 		if (current_state > END_STATE) {
@@ -316,6 +304,11 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		} else if (instructions == true) {
 			instructions = false;
 		}
+		if (e.getKeyCode() == KeyEvent.VK_1 && current_state == MENU_STATE && character_select == false) {
+			character_select = true;
+		} else if (character_select == true) {
+			character_select = false;
+		}
 	}
 
 	@Override
@@ -332,7 +325,18 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+		if (current_state == MENU_STATE && character_select == true) {
+			if (e.getX() >= 0 && e.getX() <= 50 && e.getY() >= 0 && e.getY() <= 70) {
+				carImg = redCarImg;
+			}
+			if (e.getX() >= 55 && e.getX() <= 105 && e.getY() >= 0 && e.getY() <= 70) {
+				carImg = blueCarImg;
+			}
+			if (e.getX() >= 440 && e.getX() <= 500 && e.getY() >= 730 && e.getY() <= 800) {
+				secret_unlocked = true;
+				carImg = secretCarImg;
+			}
+		}
 
 	}
 
