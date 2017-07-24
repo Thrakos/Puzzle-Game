@@ -7,7 +7,7 @@ public class ObjectManager {
 	ArrayList<GameObject> objects;
 
 	Racecar car;
-	
+
 	int score = 0;
 
 	long enemyTimer = 0;
@@ -32,7 +32,7 @@ public class ObjectManager {
 			GameObject o = objects.get(i);
 			o.update();
 		}
-		
+
 		purgeObjects();
 	}
 
@@ -77,6 +77,9 @@ public class ObjectManager {
 							|| (o2 instanceof Wall && o1 instanceof Racecar)) {
 						o1.isAlive = false;
 						o2.isAlive = false;
+						if (score >= 100) {
+							Panel.gamesPlayed += 1;
+						}
 					}
 
 				}
