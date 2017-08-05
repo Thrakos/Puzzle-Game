@@ -79,6 +79,7 @@ public class ObjectManager {
 						o2.isAlive = false;
 						if (score >= 100) {
 							Panel.gamesPlayed += 1;
+							System.out.println("" + Panel.gamesPlayed);
 						}
 					}
 

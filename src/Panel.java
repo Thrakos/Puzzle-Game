@@ -223,6 +223,9 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			if (gamesPlayed >= 10) {
 				g.drawImage(cookieCarImg, 165, 0, 50, 50, null);
 			}
+			if (highscore >= 1000) {
+				g.drawImage(rocketshipImg, 210, 0, 50, 50, null);
+			}
 			if (secret_unlocked == true) {
 				g.drawImage(Panel.secretCarImg, 450, 720, 50, 50, null);
 			}
@@ -336,6 +339,12 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		} else if (character_select == true) {
 			character_select = false;
 		}
+		if (e.getKeyCode() == KeyEvent.VK_G && current_state == MENU_STATE){
+			gamesPlayed += 1;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_S && current_state == GAME_STATE){
+			manager.score += 100;
+		}
 	}
 
 	@Override
@@ -362,8 +371,11 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			if (e.getX() >= 110 && e.getX() <= 160 && e.getY() >= 0 && e.getY() <= 70 && highscore >= 100) {
 				carImg = stripeCarImg;
 			}
-			if (e.getX() >= 165 && e.getX() <= 220 && e.getY() <= 0 && e.getY() <= 70 && gamesPlayed >= 10) {
+			if (e.getX() >= 165 && e.getX() <= 220 && e.getY() >= 0 && e.getY() <= 70 && gamesPlayed >= 10) {
 				carImg = cookieCarImg;
+			}
+			if (e.getX() >= 210 && e.getX() <= 270 && e.getY() >= 0 && e.getY() <= 70 && highscore >= 1000) {
+				carImg = rocketshipImg;
 			}
 			if (e.getX() >= 440 && e.getX() <= 500 && e.getY() >= 730 && e.getY() <= 800) {
 				secret_unlocked = true;
