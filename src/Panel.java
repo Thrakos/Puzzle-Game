@@ -40,6 +40,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	int character;
 
+	int notUnlocked;
+
 	public static int gamesPlayed;
 
 	boolean instructions;
@@ -52,14 +54,15 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	boolean countdown2;
 
 	Font titleFont;
-
 	Font otherFont;
+	Font smallerFont;
 
 	Racecar car;
 
 	ObjectManager manager;
 
 	public static BufferedImage carImg;
+	public static BufferedImage lockImg;
 	public static BufferedImage grassImg;
 	public static BufferedImage redCarImg;
 	public static BufferedImage blueCarImg;
@@ -77,8 +80,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		current_state = MENU_STATE;
 
 		titleFont = new Font("Arial", Font.PLAIN, 48);
-
 		otherFont = new Font("Arial", Font.PLAIN, 25);
+		smallerFont = new Font("Arial", Font.PLAIN, 16);
 
 		car = new Racecar(250, 700, 50, 50);
 
@@ -106,6 +109,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 		gamesPlayed = 0;
 
+		notUnlocked = 0;
+
 		try {
 			carImg = ImageIO.read(this.getClass().getResourceAsStream("racecar.gif"));
 			grassImg = ImageIO.read(this.getClass().getResourceAsStream("grass.png"));
@@ -115,6 +120,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			stripeCarImg = ImageIO.read(this.getClass().getResourceAsStream("stripecar.gif"));
 			cookieCarImg = ImageIO.read(this.getClass().getResourceAsStream("cookiecar.gif"));
 			rocketshipImg = ImageIO.read(this.getClass().getResourceAsStream("rocketship.gif"));
+			lockImg = ImageIO.read(this.getClass().getResourceAsStream("locked.gif"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -219,12 +225,18 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			g.drawImage(Panel.blueCarImg, 55, 0, 50, 50, null);
 			if (highscore >= 100) {
 				g.drawImage(stripeCarImg, 110, 0, 50, 50, null);
+			} else {
+				g.drawImage(lockImg, 110, 10, 40, 40, null);
 			}
 			if (gamesPlayed >= 10) {
 				g.drawImage(cookieCarImg, 165, 0, 50, 50, null);
+			} else {
+				g.drawImage(lockImg, 165, 10, 40, 40, null);
 			}
 			if (highscore >= 1000) {
-				g.drawImage(rocketshipImg, 210, 0, 50, 50, null);
+				g.drawImage(rocketshipImg, 220, 0, 50, 50, null);
+			} else {
+				g.drawImage(lockImg, 220, 10, 40, 40, null);
 			}
 			if (secret_unlocked == true) {
 				g.drawImage(Panel.secretCarImg, 450, 720, 50, 50, null);
@@ -232,6 +244,32 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			g.setColor(Color.yellow);
 			g.setFont(otherFont);
 			g.drawString("Click a car to select it", 125, 700);
+			g.setFont(smallerFont);
+			if (notUnlocked == 1) {
+				g.drawString("Get a score of 100 or more to unlock this car!", 80, 650);
+			} else if (notUnlocked == 2) {
+				g.drawString("Play " + (10 - gamesPlayed) + " more games with a score of 100 or more to unlock this car!", 13, 650);
+			} else if (notUnlocked == 3) {
+				g.drawString("Get a score of 1000 or more to unlock this car!", 75, 650);
+			}
+			if (carImg == redCarImg) {
+				g.drawRect(0, 0, 50, 50);
+			}
+			if (carImg == blueCarImg) {
+				g.drawRect(55, 0, 50, 50);
+			}
+			if (carImg == stripeCarImg) {
+				g.drawRect(110, 0, 50, 50);
+			}
+			if (carImg == cookieCarImg) {
+				g.drawRect(165, 0, 50, 50);
+			}
+			if (carImg == rocketshipImg) {
+				g.drawRect(220, 0, 50, 50);
+			}
+			if (carImg == secretCarImg) {
+				g.drawRect(449, 720, 50, 50);
+			}
 		}
 	}
 
@@ -338,11 +376,12 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			character_select = true;
 		} else if (character_select == true) {
 			character_select = false;
+			notUnlocked = 0;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_G && current_state == MENU_STATE){
+		if (e.getKeyCode() == KeyEvent.VK_G && current_state == MENU_STATE) {
 			gamesPlayed += 1;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_S && current_state == GAME_STATE){
+		if (e.getKeyCode() == KeyEvent.VK_S && current_state == GAME_STATE) {
 			manager.score += 100;
 		}
 	}
@@ -364,18 +403,35 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		if (current_state == MENU_STATE && character_select == true) {
 			if (e.getX() >= 0 && e.getX() <= 50 && e.getY() >= 0 && e.getY() <= 70) {
 				carImg = redCarImg;
+				notUnlocked = 0;
 			}
 			if (e.getX() >= 55 && e.getX() <= 105 && e.getY() >= 0 && e.getY() <= 70) {
 				carImg = blueCarImg;
+				notUnlocked = 0;
 			}
-			if (e.getX() >= 110 && e.getX() <= 160 && e.getY() >= 0 && e.getY() <= 70 && highscore >= 100) {
-				carImg = stripeCarImg;
+			if (e.getX() >= 110 && e.getX() <= 160 && e.getY() >= 0 && e.getY() <= 700) {
+				if (highscore >= 100) {
+					carImg = stripeCarImg;
+					notUnlocked = 0;
+				} else {
+					notUnlocked = 1;
+				}
 			}
-			if (e.getX() >= 165 && e.getX() <= 220 && e.getY() >= 0 && e.getY() <= 70 && gamesPlayed >= 10) {
-				carImg = cookieCarImg;
+			if (e.getX() >= 165 && e.getX() <= 220 && e.getY() >= 0 && e.getY() <= 70) {
+				if (gamesPlayed >= 10) {
+					carImg = cookieCarImg;
+					notUnlocked = 0;
+				} else {
+					notUnlocked = 2;
+				}
 			}
-			if (e.getX() >= 210 && e.getX() <= 270 && e.getY() >= 0 && e.getY() <= 70 && highscore >= 1000) {
-				carImg = rocketshipImg;
+			if (e.getX() >= 210 && e.getX() <= 270 && e.getY() >= 0 && e.getY() <= 70) {
+				if (highscore >= 1000) {
+					carImg = rocketshipImg;
+					notUnlocked = 0;
+				} else {
+					notUnlocked = 3;
+				}
 			}
 			if (e.getX() >= 440 && e.getX() <= 500 && e.getY() >= 730 && e.getY() <= 800) {
 				secret_unlocked = true;
