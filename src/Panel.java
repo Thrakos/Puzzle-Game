@@ -41,6 +41,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 	int character;
 
 	int notUnlocked;
+	
+	static int speed;
 
 	public static int gamesPlayed;
 
@@ -110,6 +112,8 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 		gamesPlayed = 0;
 
 		notUnlocked = 0;
+		
+		speed = 10;
 
 		try {
 			carImg = ImageIO.read(this.getClass().getResourceAsStream("racecar.gif"));
@@ -168,14 +172,16 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 
 	void updateMenuState() {
 		manager.score = 0;
+		speed = 10;
+		manager.enemySpawnTime = 80;
 	}
 
 	void updateGameState() {
 		manager.update();
 		manager.manageEnemies();
 		manager.checkCollision();
-		grass1y += 10;
-		grass2y += 10;
+		grass1y += speed;
+		grass2y += speed;
 		if (grass1y >= FallingStuff.HEIGHT) {
 			grass1y = -FallingStuff.HEIGHT;
 		}

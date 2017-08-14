@@ -18,6 +18,8 @@ public class ObjectManager {
 
 	int ran = 125;
 	int ran2 = 0;
+	
+	int increaseSpeed = 0;
 
 	public ObjectManager() {
 		objects = new ArrayList<GameObject>();
@@ -63,6 +65,12 @@ public class ObjectManager {
 			addObject(new Wall(ran + 200, -50, 50, 50));
 			enemyTimer = System.currentTimeMillis();
 			score += 1;
+			increaseSpeed += 1;
+			if (increaseSpeed == 15) {
+				increaseSpeed = 0;
+				Panel.speed += 1;
+				enemySpawnTime -= (enemySpawnTime/Panel.speed) + ((enemySpawnTime/20)*0.25);
+			}
 		}
 	}
 

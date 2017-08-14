@@ -19,7 +19,7 @@ public class Wall extends GameObject {
 	void update() {
 		super.update();
 
-		y += 10;
+		y += Panel.speed;
 
 		if (y > FallingStuff.HEIGHT) {
 			isAlive = false;
