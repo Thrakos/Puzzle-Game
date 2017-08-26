@@ -5,6 +5,7 @@ import java.util.Random;
 
 public class ObjectManager {
 	ArrayList<GameObject> objects;
+	ArrayList<Wall> walls;
 
 	Racecar car;
 
@@ -54,22 +55,34 @@ public class ObjectManager {
 	}
 
 	public void manageEnemies() {
-		if (System.currentTimeMillis() - enemyTimer >= enemySpawnTime) {
+		ran2 = rand2.nextInt(10);
+		if (ran2 % 2 == 0 && ran <= 220) {
+			ran += 20;
+		} else if (ran >= 90) {
+			ran -= 20;
+		}
+		for (int i = 0; i < walls.size(); i++) {
+			Wall w = walls.get(i);
+			if (w.y <= 0) {
+				addObject(new Wall(ran, -50, 50, 50));
+				addObject(new Wall(ran + 200, -50, 50, 50));
+			}
+		}
+		if ((System.currentTimeMillis() - enemyTimer) >= enemySpawnTime) {
 			ran2 = rand2.nextInt(10);
 			if (ran2 % 2 == 0 && ran <= 220) {
 				ran += 20;
 			} else if (ran >= 90) {
 				ran -= 20;
 			}
-			addObject(new Wall(ran, -50, 50, 50));
-			addObject(new Wall(ran + 200, -50, 50, 50));
+//			addObject(new Wall(ran, -50, 50, 50));
+//			addObject(new Wall(ran + 200, -50, 50, 50));
 			enemyTimer = System.currentTimeMillis();
 			score += 1;
 			increaseSpeed += 1;
 			if (increaseSpeed == 15) {
 				increaseSpeed = 0;
 				Panel.speed += 1;
-				enemySpawnTime -= (enemySpawnTime/Panel.speed) + ((enemySpawnTime/20)*0.25);
 			}
 		}
 	}
