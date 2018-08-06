@@ -384,12 +384,7 @@ public class Panel extends JPanel implements ActionListener, KeyListener, MouseL
 			character_select = false;
 			notUnlocked = 0;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_G && current_state == MENU_STATE) {
-			gamesPlayed += 1;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_S && current_state == GAME_STATE) {
-			manager.score += 100;
-		}
+
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class ObjectManager {
 	ArrayList<GameObject> objects;
-	ArrayList<Wall> walls = new ArrayList();
+	ArrayList<Wall> walls = new ArrayList<Wall>();
 
 	Racecar car;
 
@@ -19,8 +19,6 @@ public class ObjectManager {
 
 	int ran = 125;
 	int ran2 = 0;
-
-	int increaseSpeed = 0;
 
 	public ObjectManager() {
 		objects = new ArrayList<GameObject>();
@@ -55,25 +53,6 @@ public class ObjectManager {
 	}
 
 	public void manageEnemies() {
-		if (!walls.isEmpty()) {
-			ran2 = rand2.nextInt(10);
-			if (ran2 % 2 == 0 && ran <= 220) {
-				ran += 20;
-			} else if (ran >= 90) {
-				ran -= 20;
-			}
-			for (int i = 0; i < walls.size(); i++) {
-				Wall w = walls.get(i);
-				if (w.y <= 0) {
-					Wall w1 = new Wall(ran, -50, 50, 50);
-					Wall w2 = new Wall(ran + 200, -50, 50, 50);
-					addObject(w1);
-					addObject(w2);
-					walls.add(w1);
-					walls.add(w2);
-				}
-			}
-		}
 
 		if ((System.currentTimeMillis() - enemyTimer) >= enemySpawnTime) {
 			ran2 = rand2.nextInt(10);
@@ -90,11 +69,7 @@ public class ObjectManager {
 			walls.add(w2);
 			enemyTimer = System.currentTimeMillis();
 			score += 1;
-			increaseSpeed += 1;
-			if (increaseSpeed == 15) {
-				increaseSpeed = 0;
-				Panel.speed += 1;
-			}
+
 		}
 	}
 
@@ -105,7 +80,8 @@ public class ObjectManager {
 				GameObject o2 = objects.get(j);
 
 				if (o1.collisionBox.intersects(o2.collisionBox)) {
-					if ((o1 instanceof Wall && o2 instanceof Racecar) || (o2 instanceof Wall && o1 instanceof Racecar)) {
+					if ((o1 instanceof Wall && o2 instanceof Racecar)
+							|| (o2 instanceof Wall && o1 instanceof Racecar)) {
 						o1.isAlive = false;
 						o2.isAlive = false;
 						if (score >= 100) {
